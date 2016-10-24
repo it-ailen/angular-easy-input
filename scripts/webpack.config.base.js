@@ -9,11 +9,11 @@ var config = {
         output: "./src/image.js"
     },
     output: {
-        path: path.resolve(__dirname, "./"),
+        path: path.resolve(__dirname, "../"),
         filename: "[name].js"
     },
     resolve: {
-        root: path.resolve(__dirname, "./src")
+        root: path.resolve(__dirname, "../src")
     },
     module: {
         loaders: [

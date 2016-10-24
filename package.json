@@ -1,10 +1,33 @@
 {
-  "name": "angular-image",
-  "description": "A more readable input component for image with Angularjs",
-  "version": "0.0.1",
-  "author": "Allen Zou",
+  "name": "angular-easy-input",
+  "version": "0.1.0",
+  "description": "A more readable input component for image with Angular",
+  "main": "index.js",
   "scripts": {
-    "build": "",
-    "build.uncompressed": ""
-  }
+    "build.uncompressed": "webpack --config scripts/webpack.config.base.js",
+    "build": "webpack --config scripts/webpack.config.minified.js"
+  },
+  "dependencies": {
+    "css-loader": "^0.25.0",
+    "html-loader": "^0.4.4",
+    "less": "^2.7.1",
+    "less-loader": "^2.2.3",
+    "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.13.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/it-ailen/angular-easy-input.git"
+  },
+  "keywords": [
+    "angular",
+    "input"
+  ],
+  "author": "Allen Zou",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/it-ailen/angular-easy-input/issues"
+  },
+  "homepage": "https://github.com/it-ailen/angular-easy-input#readme"
 }
