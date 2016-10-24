@@ -1,0 +1,43 @@
+.image-input {
+  position: relative;
+  .size-controller {
+    padding-bottom: 100%;
+  }
+  .body {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: auto;
+    img.background {
+      width: 100%;
+      height: 100%;
+    }
+    input {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      opacity: .5;
+    }
+  }
+  .processing {
+    position: absolute;
+    z-index: 200;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: none;
+    background-color: #cdcdcd;
+    opacity: .6;
+  }
+  &.uploading {
+    .processing {
+      display: block;
+    }
+  }
+}

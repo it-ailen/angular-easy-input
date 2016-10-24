@@ -1,0 +1,10 @@
+{
+  "name": "angular-image",
+  "description": "A more readable input component for image with Angularjs",
+  "version": "0.0.1",
+  "author": "Allen Zou",
+  "scripts": {
+    "build": "",
+    "build.uncompressed": ""
+  }
+}
