@@ -18,9 +18,9 @@ var app = angular.module("angular.easy.input", [])
             require: ["ngModel", "^form"],
             restrict: "E",
             template: require("./v/image-input.html"),
-            link: function($scope, element, attributes, controllers) {
+            link: function($scope, elements, attributes, controllers) {
                 console.log("in imageInput");
-                console.log(element);
+                console.log(elements);
                 $scope.status = "normal";
                 $scope.$watch("hwRatio", function(val) {
                     if (val && +val) {
@@ -39,7 +39,11 @@ var app = angular.module("angular.easy.input", [])
                     var classes = [$scope.status];
                     return classes;
                 };
-                $("input", element).change(function(e) {
+                console.log("element");
+                console.log(elements);
+                console.log(elements[0].querySelector("input"));
+                var input = angular.element(elements[0].querySelector("input"));
+                input.on("change", function(e) {
                     var file = (this.files && this.files[0]) || undefined;
                     if (file) {
                         var reader = new FileReader();
@@ -60,12 +64,12 @@ var app = angular.module("angular.easy.input", [])
                                 ;
                             } else {
                                 $scope.status = "failed";
-                                $("input", element).val("");
+                                input.val("");
                             }
                         };
                         reader.onerror = function(e) {
                             $scope.status = "failed";
-                            $("input", element).val("");
+                            input.val("");
                         };
                         reader.readAsDataURL(this.files[0]);
                     }
