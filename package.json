@@ -7,7 +7,7 @@
     "build.uncompressed": "webpack --config scripts/webpack.config.base.js",
     "build": "webpack --config scripts/webpack.config.minified.js"
   },
-  "dependencies": {
+  "devDependencies": {
     "css-loader": "^0.25.0",
     "html-loader": "^0.4.4",
     "less": "^2.7.1",
