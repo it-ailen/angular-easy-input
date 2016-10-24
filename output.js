@@ -67,6 +67,8 @@
 	            link: function($scope, elements, attributes, controllers) {
 	                console.log("in imageInput");
 	                console.log(elements);
+	                var formController = controllers[0];
+	                var modelController = controllers[1];
 	                $scope.status = "normal";
 	                $scope.$watch("hwRatio", function(val) {
 	                    if (val && +val) {
@@ -76,10 +78,19 @@
 	                    }
 	                });
 	                $scope.$watch("src", function(newVal, oldVal) {
+	                    if (angular.isUndefined(newVal) && angular.isUndefined(oldVal)) {
+	                        return;
+	                    }
+	                    console.log("src changed...'" + oldVal + "'-->'" + newVal + "'");
 	                    $scope.preview = $scope.srcToUrl && $scope.srcToUrl(newVal) ||
 	                        function (src) {
 	                            return src;
 	                        }(newVal);
+	                    if (attributes.required && (angular.isUndefined(newVal) || newVal === null)) {
+	                        modelController.$setValidity("required", false);
+	                    } else {
+	                        modelController.$setValidity("required", true);
+	                    }
 	                });
 	                $scope.class = function() {
 	                    var classes = [$scope.status];
@@ -90,6 +101,7 @@
 	                console.log(elements[0].querySelector("input"));
 	                var input = angular.element(elements[0].querySelector("input"));
 	                input.on("change", function(e) {
+	                    console.log("input changed now...");
 	                    var file = (this.files && this.files[0]) || undefined;
 	                    if (file) {
 	                        var reader = new FileReader();
@@ -103,14 +115,24 @@
 	                                    .then(function(val) {
 	                                        $scope.src = val;
 	                                        $scope.status = "success";
+	                                        modelController.$setDirty();
+	                                        formController.$setDirty();
+	                                        modelController.$setValidity("required", false);
 	                                    })
-	                                    .catch(function() {
+	                                    .catch(function(e) {
 	                                        $scope.status = "failed";
+	                                        input.val("");
+	                                        if (attributes.required) {
+	                                            modelController.$setValidity("required", false);
+	                                        }
 	                                    })
 	                                ;
 	                            } else {
 	                                $scope.status = "failed";
 	                                input.val("");
+	                                if (attributes.required) {
+	                                    modelController.$setValidity("required", false);
+	                                }
 	                            }
 	                        };
 	                        reader.onerror = function(e) {
@@ -119,6 +141,8 @@
 	                        };
 	                        reader.readAsDataURL(this.files[0]);
 	                    }
+	                    e.preventDefault();
+	                    return false;
 	                });
 	            }
 	        };
@@ -137,7 +161,7 @@
 
 
 	// module
-	exports.push([module.id, ".image-input {\n  position: relative;\n}\n.image-input .size-controller {\n  padding-bottom: 100%;\n}\n.image-input .body {\n  position: absolute;\n  left: 0;\n  top: 0;\n  width: 100%;\n  height: 100%;\n  z-index: auto;\n}\n.image-input .body img.background {\n  width: 100%;\n  height: 100%;\n}\n.image-input .body input {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 100;\n  opacity: .5;\n}\n.image-input .processing {\n  position: absolute;\n  z-index: 200;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  display: none;\n  background-color: #cdcdcd;\n  opacity: .6;\n}\n.image-input.uploading .processing {\n  display: block;\n}\n", ""]);
+	exports.push([module.id, "ng-image-input,\n*[ng-image-input] {\n  display: block;\n}\n.image-input {\n  position: relative;\n  display: block;\n}\n.image-input .size-controller {\n  padding-bottom: 100%;\n}\n.image-input .body {\n  position: absolute;\n  left: 0;\n  top: 0;\n  width: 100%;\n  height: 100%;\n  z-index: auto;\n}\n.image-input .body img.background {\n  width: 100%;\n  height: 100%;\n}\n.image-input .body input {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  top: 0;\n  left: 0;\n  z-index: 100;\n  opacity: .5;\n}\n.image-input .processing {\n  position: absolute;\n  z-index: 200;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  display: none;\n  background-color: #cdcdcd;\n  opacity: .6;\n}\n.image-input.uploading .processing {\n  display: block;\n}\n", ""]);
 
 	// exports
 
@@ -202,7 +226,7 @@
 /* 3 */
 /***/ function(module, exports) {
 
-	module.exports = "<div class=\"image-input\" ng-class=\"class()\">\n  <div class=\"size-controller\" ng-style=\"size\"></div>\n  <div class=\"body\">\n    <img class=\"background\" ng-src=\"{{ preview }}\">\n    <input type=\"file\" accept=\"image/*\" ng-model=\"value\">\n  </div>\n  <div class=\"processing\">\n\n  </div>\n</div>";
+	module.exports = "<div class=\"image-input\" ng-class=\"class()\">\r\n  <div class=\"size-controller\" ng-style=\"size\"></div>\r\n  <div class=\"body\">\r\n    <img class=\"background\" ng-src=\"{{ preview }}\">\r\n    <input type=\"file\" accept=\"image/*\" ng-model=\"value\">\r\n  </div>\r\n  <div class=\"processing\">\r\n\r\n  </div>\r\n</div>";
 
 /***/ },
 /* 4 */
@@ -472,8 +496,8 @@
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./image.less", function() {
-				var newContent = require("!!./../../node_modules/css-loader/index.js!./../../node_modules/less-loader/index.js!./image.less");
+			module.hot.accept("!!./../../../../../../../node_modules/css-loader/index.js!./../../../../../../../node_modules/less-loader/index.js!./image.less", function() {
+				var newContent = require("!!./../../../../../../../node_modules/css-loader/index.js!./../../../../../../../node_modules/less-loader/index.js!./image.less");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});

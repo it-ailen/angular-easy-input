@@ -21,6 +21,8 @@ var app = angular.module("angular.easy.input", [])
             link: function($scope, elements, attributes, controllers) {
                 console.log("in imageInput");
                 console.log(elements);
+                var formController = controllers[0];
+                var modelController = controllers[1];
                 $scope.status = "normal";
                 $scope.$watch("hwRatio", function(val) {
                     if (val && +val) {
@@ -30,10 +32,19 @@ var app = angular.module("angular.easy.input", [])
                     }
                 });
                 $scope.$watch("src", function(newVal, oldVal) {
+                    if (angular.isUndefined(newVal) && angular.isUndefined(oldVal)) {
+                        return;
+                    }
+                    console.log("src changed...'" + oldVal + "'-->'" + newVal + "'");
                     $scope.preview = $scope.srcToUrl && $scope.srcToUrl(newVal) ||
                         function (src) {
                             return src;
                         }(newVal);
+                    if (attributes.required && (angular.isUndefined(newVal) || newVal === null)) {
+                        modelController.$setValidity("required", false);
+                    } else {
+                        modelController.$setValidity("required", true);
+                    }
                 });
                 $scope.class = function() {
                     var classes = [$scope.status];
@@ -44,6 +55,7 @@ var app = angular.module("angular.easy.input", [])
                 console.log(elements[0].querySelector("input"));
                 var input = angular.element(elements[0].querySelector("input"));
                 input.on("change", function(e) {
+                    console.log("input changed now...");
                     var file = (this.files && this.files[0]) || undefined;
                     if (file) {
                         var reader = new FileReader();
@@ -57,14 +69,24 @@ var app = angular.module("angular.easy.input", [])
                                     .then(function(val) {
                                         $scope.src = val;
                                         $scope.status = "success";
+                                        modelController.$setDirty();
+                                        formController.$setDirty();
+                                        modelController.$setValidity("required", false);
                                     })
-                                    .catch(function() {
+                                    .catch(function(e) {
                                         $scope.status = "failed";
+                                        input.val("");
+                                        if (attributes.required) {
+                                            modelController.$setValidity("required", false);
+                                        }
                                     })
                                 ;
                             } else {
                                 $scope.status = "failed";
                                 input.val("");
+                                if (attributes.required) {
+                                    modelController.$setValidity("required", false);
+                                }
                             }
                         };
                         reader.onerror = function(e) {
@@ -73,6 +95,8 @@ var app = angular.module("angular.easy.input", [])
                         };
                         reader.readAsDataURL(this.files[0]);
                     }
+                    e.preventDefault();
+                    return false;
                 });
             }
         };

@@ -1,6 +1,6 @@
 {
   "name": "angular-easy-input",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A more readable input component for image with Angular",
   "main": "index.js",
   "scripts": {
